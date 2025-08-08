@@ -1,0 +1,3 @@
+1. Disable the force dark mode in xiaomi devices.
+2. Add Icons and configure the splash screen.
+
