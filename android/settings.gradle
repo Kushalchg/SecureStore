@@ -37,3 +37,6 @@ expoAutolinking.useExpoVersionCatalog()
 
 include ':app'
 includeBuild(expoAutolinking.reactNativeGradlePlugin)
+
+include ':modules:rootdetection'
+project(':modules:rootdetection').projectDir = new File(rootProject.projectDir, 'modules/rootdetection')

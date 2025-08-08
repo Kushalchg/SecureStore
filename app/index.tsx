@@ -1,53 +1,88 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { useTheme } from '@react-navigation/native';
-import { ExtendedTheme } from '@/constants/CustomThemt';
+import { useNativeModule } from '@/hooks/useNativeModule';
+import { router } from 'expo-router';
+import React, { useEffect } from 'react';
+import { View, Text, Button, StyleSheet } from 'react-native';
 
+const SecurityScreen: React.FC = () => {
+  const { securityStatus, error, checkSecurity } = useNativeModule();
 
-const HomeScreen = () => {
-  const { colors } = useTheme();
+  useEffect(() => {
+    if (securityStatus?.isRooted) {
+      router.replace("/landingPage")
+    }
+  }, [securityStatus])
 
-  const styles = createStyles(colors);
+  if (error) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.error}>Error: {error}</Text>
+        <Button title="Retry" onPress={checkSecurity} />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome to My App</Text>
-      <Text style={styles.description}>
-        This is a simple React Native page using theme colors from React Navigation
-      </Text>
+      <Text style={styles.title}>Security Status</Text>
+
+      <View style={styles.statusItem}>
+        <Text>Device Rooted: </Text>
+        <Text style={securityStatus?.isRooted ? styles.danger : styles.safe}>
+          {securityStatus?.isRooted ? 'YES' : 'NO'}
+        </Text>
+      </View>
+
+      <View style={styles.statusItem}>
+        <Text>Developer Options: </Text>
+        <Text style={securityStatus?.isDevEnabled ? styles.warning : styles.safe}>
+          {securityStatus?.isDevEnabled ? 'ENABLED' : 'DISABLED'}
+        </Text>
+      </View>
+      <Button title="Refresh" onPress={checkSecurity} />
     </View>
   );
 };
 
-export default HomeScreen;
-
-const createStyles = (colors: ExtendedTheme['colors']) => StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.background,
     padding: 20,
+    justifyContent: 'center',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: colors.text,
     marginBottom: 20,
+    textAlign: 'center',
   },
-  description: {
+  statusItem: {
+    flexDirection: 'row',
+    marginBottom: 10,
     fontSize: 16,
-    color: colors.text,
+  },
+  detail: {
+    fontSize: 12,
+    color: '#666',
+    marginLeft: 10,
+    marginBottom: 10,
+  },
+  safe: {
+    color: 'green',
+    fontWeight: 'bold',
+  },
+  warning: {
+    color: 'orange',
+    fontWeight: 'bold',
+  },
+  danger: {
+    color: 'red',
+    fontWeight: 'bold',
+  },
+  error: {
+    color: 'red',
     textAlign: 'center',
     marginBottom: 20,
   },
-  buttonContainer: {
-    backgroundColor: colors.primary,
-    borderRadius: 8,
-    padding: 10,
-  },
-  buttonText: {
-    color: colors.card,
-    fontSize: 16,
-    fontWeight: '600',
-  },
 });
+
+export default SecurityScreen;
