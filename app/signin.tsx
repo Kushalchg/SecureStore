@@ -1,171 +1,176 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   ScrollView,
   Platform,
-  Alert,
   StyleSheet,
   Dimensions,
-  Keyboard,
+  KeyboardAvoidingView,
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@react-navigation/native';
-import { ExtendedTheme } from '@/constants/CustomThemt';
+import { ExtendedTheme } from '@/constants/CustomTheme';
+import { CustomButton } from '@/components/custom/CustomButton';
+import HorizontalLine from '@/components/HorizontalLines';
+import VerticalLine from '@/components/VerticalLines';
+import CustomTextInput from '@/components/custom/UserInput';
+import BackButton from '@/components/BackButton';
+import { router } from 'expo-router';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
+import ForgotPasswordModal from '@/components/modals/ForgotPasswordModal';
+
+interface FormValueInterface {
+  email: string;
+  password: string;
+}
+
+//valildation schema for the form
+const validationSchema = Yup.object().shape({
+  email: Yup.string()
+    .email('Please enter a valid email address')
+    .required('Email is required'),
+  password: Yup.string()
+    .min(6, 'Password must be at least 6 characters')
+    .required('Password is required'),
+});
+
+//initial vlaues of form
+const initialValues: FormValueInterface = {
+  email: '',
+  password: '',
+};
 
 const SignInScreen = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
-  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
-  const { top, bottom } = useSafeAreaInsets()
+  const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
 
+  const { top, bottom } = useSafeAreaInsets();
 
   const { colors } = useTheme();
   const styles = createStyles(colors);
 
-  const getContentHeight = useCallback(() => {
-    if (isKeyboardVisible) {
-      // When keyboard is visible, allow scrolling with extra space
-      return screenHeight + keyboardHeight - top - bottom;
-    }
-    return screenHeight - top - bottom;
-  }, [isKeyboardVisible]);
 
-  useEffect(() => {
-    const keyboardWillShowListener = Keyboard.addListener(
-      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
-      (e) => {
-        setKeyboardHeight(e.endCoordinates.height);
-        setIsKeyboardVisible(true);
-      }
-    );
-
-    const keyboardWillHideListener = Keyboard.addListener(
-      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
-      () => {
-        setKeyboardHeight(0);
-        setIsKeyboardVisible(false);
-      }
-    );
-
-    const updateScreenHeight = () => {
-      setScreenHeight(Dimensions.get('window').height);
-    };
-
-    const subscription = Dimensions.addEventListener('change', updateScreenHeight);
-
-    return () => {
-      keyboardWillShowListener.remove();
-      keyboardWillHideListener.remove();
-      subscription?.remove();
-    };
-  }, []);
-
-  const handleSignIn = async () => {
-    if (!email.trim() || !password.trim()) {
-      Alert.alert('Error', 'Please fill in all fields');
-      return;
-    }
-
+  const handleSignIn = async (values: FormValueInterface) => {
     setIsLoading(true);
-
     try {
-      // Simulate API call
+      console.log(values)
       await new Promise(resolve => setTimeout(resolve, 1500));
+      router.replace('/signup')
 
-      // Replace with your actual sign-in logic
-      console.log('Sign in with:', { email, password });
-      Alert.alert('Success', 'Sign in successful!');
-    } catch (error) {
-      Alert.alert('Error', 'Sign in failed. Please try again.');
+    } catch (error: any) {
+      console.log("Error Occured")
     } finally {
       setIsLoading(false);
     }
   };
 
+  const handleNavigate = () => {
+    router.replace('/signup');
+  };
+
+  const handleForgotPassword = () => {
+    setShowForgotPasswordModal(true);
+  };
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        <ScrollView
-          contentContainerStyle={[
-            styles.scrollContainer,
-            {
-              minHeight: getContentHeight(),
-              paddingBottom: isKeyboardVisible ? keyboardHeight + 40 : 40
-            }
-          ]}
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
-          bounces={false}
-        >
-          <View style={styles.header}>
-            <Text style={styles.title}>Welcome Back</Text>
-            <Text style={styles.subtitle}>Sign in to your account</Text>
-          </View>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1 }}
+      >
+        <HorizontalLine />
+        <VerticalLine />
+        <View style={styles.container}>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={handleSignIn}
+          >
+            {({ values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting }) => (
+              <ScrollView
+                contentContainerStyle={[
+                  styles.scrollContainer,
+                  {
+                    height: screenHeight - top - bottom - 40,
+                    paddingBottom: 40
+                  }
+                ]}
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+                bounces={false}
+              >
+                <BackButton />
+                <View style={styles.header}>
+                  <Text style={styles.title}>Welcome Back</Text>
+                  <Text style={styles.subtitle}>Sign in to your account</Text>
+                </View>
 
-          <View style={styles.form}>
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>Email</Text>
-              <TextInput
-                style={styles.input}
-                value={email}
-                onChangeText={setEmail}
-                placeholder="Enter your email"
-                placeholderTextColor={colors.text + '60'}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                autoCorrect={false}
-              />
-            </View>
+                <View style={styles.form}>
+                  <CustomTextInput
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    value={values.email}
+                    onChangeText={handleChange('email')}
+                    onBlur={handleBlur('email')}
+                    placeholder="Enter Your Email"
+                    labelStyle={{ fontWeight: "800" }}
+                    autoCorrect={false}
+                    error={touched.email && errors.email ? errors.email : undefined}
+                    helperText={touched.email && errors.email ? errors.email : undefined}
+                  />
 
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>Password</Text>
-              <TextInput
-                style={styles.input}
-                value={password}
-                onChangeText={setPassword}
-                placeholder="Enter your password"
-                placeholderTextColor={colors.text + '60'}
-                secureTextEntry
-                autoCapitalize="none"
-                autoCorrect={false}
-              />
-            </View>
+                  <CustomTextInput
+                    placeholder="Enter Your Password"
+                    labelStyle={{ fontWeight: "800" }}
+                    autoCapitalize="none"
+                    value={values.password}
+                    onChangeText={handleChange('password')}
+                    onBlur={handleBlur('password')}
+                    autoCorrect={false}
+                    isPassword={true}
+                    error={touched.password && errors.password ? errors.password : undefined}
+                    helperText={touched.password && errors.password ? errors.password : undefined}
+                  />
 
-            <TouchableOpacity style={styles.forgotPassword}>
-              <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-            </TouchableOpacity>
+                  <TouchableOpacity style={styles.forgotPassword} onPress={handleForgotPassword}>
+                    <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+                  </TouchableOpacity>
 
-            <TouchableOpacity
-              style={[
-                styles.signInButton,
-                isLoading && styles.signInButtonDisabled
-              ]}
-              onPress={handleSignIn}
-              disabled={isLoading}
-            >
-              <Text style={styles.signInButtonText}>
-                {isLoading ? 'Signing In...' : 'Sign In'}
-              </Text>
-            </TouchableOpacity>
-          </View>
+                  <CustomButton
+                    style={[
+                      (isLoading || isSubmitting) && styles.signInButtonDisabled
+                    ]}
+                    onPress={handleSubmit}
+                    disabled={isLoading || isSubmitting}
+                  >
+                    <Text style={styles.signInButtonText}>
+                      {(isLoading || isSubmitting) ? `Signing in...` : 'Sign In'}
+                    </Text>
+                  </CustomButton>
+                </View>
 
-          <View style={[
-            styles.footer,
-            !isKeyboardVisible && styles.footerFixed
-          ]}>
-            <Text style={styles.footerText}>
-              Don't have an account?{' '}
-              <Text style={styles.signUpLink}>Sign Up</Text>
-            </Text>
-          </View>
-        </ScrollView>
-      </View>
+                <View style={[
+                  styles.footer,
+                ]}>
+                  <Text style={styles.footerText}>
+                    Don't have an account?{' '}
+                  </Text>
+                  <TouchableOpacity onPress={handleNavigate}>
+                    <Text style={styles.registerLink}>Register</Text>
+                  </TouchableOpacity>
+                </View>
+              </ScrollView>
+            )}
+          </Formik>
+        </View>
+      </KeyboardAvoidingView>
+      <ForgotPasswordModal
+        visible={showForgotPasswordModal}
+        onClose={() => setShowForgotPasswordModal(false)}
+      />
     </SafeAreaView>
   );
 };
@@ -173,53 +178,34 @@ const SignInScreen = () => {
 const createStyles = (colors: ExtendedTheme['colors']) => StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   scrollContainer: {
-    paddingHorizontal: 24,
-    paddingTop: 60,
+    paddingHorizontal: 16,
+    paddingTop: 30,
     justifyContent: 'space-between',
   },
   header: {
+    paddingTop: 30,
     alignItems: 'center',
     marginBottom: 40,
   },
   title: {
     fontSize: 28,
-    fontWeight: 'bold',
+    fontFamily: 'GroteskBold',
     color: colors.text,
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
+    fontFamily: 'MontserratMedium',
     color: colors.text + '80',
   },
   form: {
     flex: 1,
     justifyContent: 'center',
-  },
-  inputContainer: {
-    marginBottom: 20,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.text,
-    marginBottom: 8,
-  },
-  input: {
-    height: 50,
-    borderWidth: 1,
-    borderColor: colors.border + '20',
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    fontSize: 16,
-    color: colors.text,
-    backgroundColor: colors.card,
   },
   forgotPassword: {
     alignSelf: 'flex-end',
@@ -227,26 +213,20 @@ const createStyles = (colors: ExtendedTheme['colors']) => StyleSheet.create({
   },
   forgotPasswordText: {
     fontSize: 14,
-    color: colors.primary,
-    fontWeight: '500',
-  },
-  signInButton: {
-    height: 50,
-    backgroundColor: colors.primary,
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 20,
+    color: colors.blue,
+    fontFamily: "Grotesk"
   },
   signInButtonDisabled: {
     opacity: 0.6,
   },
   signInButtonText: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
+    fontFamily: 'GroteskBold',
+    color: colors.blue,
   },
   footer: {
+    marginHorizontal: 'auto',
+    flexDirection: 'row',
     alignItems: 'center',
   },
   footerFixed: {
@@ -254,11 +234,12 @@ const createStyles = (colors: ExtendedTheme['colors']) => StyleSheet.create({
   },
   footerText: {
     fontSize: 14,
+    fontFamily: 'Grotesk',
     color: colors.text + '80',
   },
-  signUpLink: {
-    color: colors.primary,
-    fontWeight: '600',
+  registerLink: {
+    color: colors.blue,
+    fontFamily: 'Grotesk',
   },
 });
 

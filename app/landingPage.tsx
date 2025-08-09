@@ -5,7 +5,7 @@ import { useTheme } from "@react-navigation/native";
 import { router } from "expo-router";
 import HorizontalLine from "@/components/HorizontalLines";
 import VerticalLine from "@/components/VerticalLines";
-import { ExtendedTheme } from "@/constants/CustomThemt";
+import { ExtendedTheme } from "@/constants/CustomTheme";
 import { CustomButton } from "@/components/custom/CustomButton";
 
 const LandingPage = () => {
@@ -17,11 +17,11 @@ const LandingPage = () => {
   };
 
   const handleRegister = () => {
-    // router.push("/(unauthorized)/registration")
+    router.push("/signup")
   };
 
-  const handdleGoogleSingin = () => {
-    // router.replace("/(authorized)/homeTab")
+  const handleGoogleSingin = () => {
+    router.replace("/authenticated/homePage")
   };
 
   return (
@@ -35,7 +35,10 @@ const LandingPage = () => {
         </View>
 
         <View style={styles.buttonGroup}>
-          <CustomButton borderColor={colors.blue} onPress={() => console.log("aa")} style={{ marginBottom: 16 }} >
+          <CustomButton
+            borderColor={colors.blue}
+            onPress={handleGoogleSingin}
+            style={{ marginBottom: 16 }} >
             <AntDesign name="google" size={20} color={colors.blue} style={styles.iconSpacing} />
             <Text style={styles.googleText}>Continue with Google</Text>
           </CustomButton>
@@ -84,7 +87,7 @@ const createStyles = (colors: ExtendedTheme['colors']) =>
     logoText: {
       color: colors.text,
       fontSize: 30,
-      fontWeight: "800",
+      fontFamily: "GroteskBold"
     },
     buttonGroup: {
       width: "100%",
@@ -92,11 +95,12 @@ const createStyles = (colors: ExtendedTheme['colors']) =>
     },
     googleText: {
       color: colors.blue,
-      fontWeight: 'bold',
+      fontFamily: "GroteskBold",
       fontSize: 16,
     },
     mobileText: {
-      color: colors.text,
+      color: colors.text + "80",
+      fontFamily: "GroteskBold",
       fontSize: 16,
     },
     iconSpacing: {
@@ -111,6 +115,7 @@ const createStyles = (colors: ExtendedTheme['colors']) =>
     footerText: {
       fontSize: 16,
       color: colors.muted,
+      fontFamily: "Grotesk",
       paddingHorizontal: 16,
     },
     divider: {

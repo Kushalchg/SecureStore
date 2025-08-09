@@ -1,7 +1,7 @@
 import React from 'react';
-import { TouchableOpacity, StyleSheet, ViewStyle, StyleProp } from 'react-native';
+import { TouchableOpacity, StyleSheet, ViewStyle, StyleProp, TouchableOpacityProps } from 'react-native';
 
-type CustomButtonProps = {
+interface CustomButtonProps extends TouchableOpacityProps {
   children: React.ReactNode;
   onPress?: () => void;
   borderColor?: string;
@@ -10,20 +10,20 @@ type CustomButtonProps = {
 
 export const CustomButton = ({
   children,
-  onPress,
   borderColor = '#007AFF',
-  style,
+  ...restProps
 }: CustomButtonProps) => {
   return (
     <TouchableOpacity
-      onPress={onPress}
+      {...restProps}
+      onPress={restProps.onPress}
       style={[
         styles.button,
         {
           borderColor,
           backgroundColor: borderColor + "30",
         },
-        style,
+        restProps.style
       ]}
     >
       {children}
@@ -39,6 +39,5 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingVertical: 16,
     paddingHorizontal: 12,
-    // borderRadius: 8,
   },
 });

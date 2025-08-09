@@ -7,7 +7,7 @@ export interface ExtendedTheme extends Theme {
     blue: string;
     green: string;
     profit: string;
-    loss: string;
+    red: string;
     highlight: string;
     newBorder: string
   }
@@ -33,7 +33,7 @@ const MyLightTheme: ExtendedTheme = {
     green: "#14532d",
     highlight: "#fe9a00",
     profit: "#36AE7C",
-    loss: '#DF2E38',
+    red: '#DF2E38',
     newBorder: '#c9c7bf',
   }
 };
@@ -53,7 +53,7 @@ const MyDarkTheme: ExtendedTheme = {
     green: "#dcfce7",
     highlight: "#fe9a00",
     profit: "#36AE7C",
-    loss: '#C70D3A',
+    red: '#C70D3A',
     newBorder: '#5e5f5f',
   }
 };
