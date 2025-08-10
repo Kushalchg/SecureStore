@@ -1,50 +1,79 @@
-# Welcome to your Expo app 👋
+# Secure Store
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Mock practice app demonstrating mobile security features including root detection, screenshot prevention, and developer mode restrictions.
 
-## Get started
+## Security Features
+
+- Root detection using RootBeer library
+- Screenshot and screen recording prevention
+- Developer mode detection
+
+## Setup
 
 1. Install dependencies
-
    ```bash
    npm install
    ```
 
-2. Start the app
+2. Build for development
+   
+   This app requires a development build due to custom native modules. It won't work with Expo Go.
+   
+   ```bash
+   cd android/
+   ./gradlew assembleDebug
+   ```
+   
+   Debug APK location: `android/app/build/outputs/apk/debug/app-debug.apk`
+
+   Add to this you can also find the `app-debug.apk` on project root also.
+
+3. Device setup (if using physical device)
+   
+   See [React Native docs](https://reactnative.dev/docs/running-on-device)
+
+4. Start development server
 
    ```bash
-   npx expo start
+   npm start
    ```
 
-In the output, you'll find options to open the app in a
+## Platform Support
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- Android: Tested and working
+- iOS: Untested (native modules may not work)
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Implementation Details
 
-## Get a fresh project
+### Root Detection
+Uses [RootBeer](https://github.com/scottyab/rootbeer) library to detect rooted devices.
 
-When you're ready, run:
+### Screenshot Prevention
+Implements Android's native [screen capture control](https://developer.android.com/about/versions/14/features/screenshot-detection#control-capture-ability).
 
+### Developer Mode Detection
+Checks `Settings.Global.DEVELOPMENT_SETTINGS_ENABLED` via Android's [Settings API](https://developer.android.com/reference/android/provider/Settings.Global#DEVELOPMENT_SETTINGS_ENABLED).
+
+## Build Outputs
+
+### Debug Build
 ```bash
-npm run reset-project
+cd android/
+./gradlew assembleDebug
 ```
+APK location: `android/app/build/outputs/apk/debug/app-debug.apk`
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### Release Build
+```bash
+cd android/
+./gradlew assembleRelease
+```
+APK location: `android/app/build/outputs/apk/release/app-release.apk`
 
-## Learn more
+*Note: Release keystore is already included in the project.*
 
-To learn more about developing your project with Expo, look at the following resources:
+## Notes
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- Custom native modules require development builds
+- Security features are Android-specific
+- Project uses Expo with file-based routing

@@ -7,21 +7,31 @@ import { CustomButton } from '@/components/custom/CustomButton';
 
 const SecurityScreen = () => {
   const { colors } = useTheme();
-  const { securityStatus, error } = useNativeModule();
+  const { securityStatus, error, checkSecurity } = useNativeModule();
   const styles = createStyles(colors);
 
   const handleExit = () => {
     BackHandler.exitApp();
   };
 
+  const handleRefresh = () => {
+    checkSecurity()
+  }
+
   if (error) {
     return (
       <View style={styles.container}>
         <Text style={styles.errorText}>Security Check Failed: {error}</Text>
         <Text style={styles.messageText}>Unable to proceed due to security error.</Text>
-        <TouchableOpacity style={styles.button} onPress={handleExit}>
-          <Text style={styles.buttonText}>Exit App</Text>
-        </TouchableOpacity>
+        <View style={{ flexDirection: 'row' }}>
+          <TouchableOpacity style={styles.button} onPress={handleExit}>
+            <Text style={styles.buttonText}>Exit App</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.button} onPress={handleExit}>
+            <Text style={styles.buttonText}>Exit App</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }
@@ -54,9 +64,14 @@ const SecurityScreen = () => {
           <Text style={styles.messageText}>
             Unable to proceed: Device is insecure due to rooting or enabled developer options.
           </Text>
-          <CustomButton style={{ paddingHorizontal: 40, paddingVertical: 10, }} onPress={handleExit}>
-            <Text style={styles.buttonText}>Exit App</Text>
-          </CustomButton>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
+            <CustomButton borderColor={colors.red} style={{ paddingHorizontal: 40, paddingVertical: 10, }} onPress={handleExit}>
+              <Text style={[styles.buttonText, { color: colors.red }]}>Exit App</Text>
+            </CustomButton>
+            <CustomButton style={{ paddingHorizontal: 40, paddingVertical: 10 }} onPress={handleRefresh}>
+              <Text style={styles.buttonText}>Refresh</Text>
+            </CustomButton>
+          </View>
 
         </>
       )}
