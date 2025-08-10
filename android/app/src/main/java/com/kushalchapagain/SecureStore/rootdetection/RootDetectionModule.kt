@@ -12,7 +12,7 @@ import com.scottyab.rootbeer.RootBeer
 
 class RootDetectionModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
     
-    private val rootBeer = RootBeer(reactContext);
+    private val rootBeerHelper = RootBeerHelper(reactContext)
 
     override fun getName(): String {
         return "RootDetection"
@@ -22,10 +22,11 @@ class RootDetectionModule(reactContext: ReactApplicationContext) : ReactContextB
     fun checkRootStatus(promise: Promise) {
         try {
           // I use the rootBeer for android to check weather the app is rooted or not
-            val isRooted =rootBeer.isRooted() 
-            // val subBinaary=rootBeer.checkForSuBinary() 
-            val result = Arguments.createMap()
-            result.putBoolean("isRooted", isRooted)
+            val isRooted = rootBeerHelper.isDeviceRooted()
+            val result = Arguments.createMap().apply {
+                  putBoolean("isRooted", isRooted)
+                  putString("method", rootBeerHelper.getDetectionMethod())
+              }
             promise.resolve(result)
         } catch (e: Exception) {
             promise.reject("ROOT_CHECK_ERROR", e.message, e)
