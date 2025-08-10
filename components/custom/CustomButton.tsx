@@ -15,6 +15,7 @@ export const CustomButton = ({
 }: CustomButtonProps) => {
   return (
     <TouchableOpacity
+      hitSlop={10}
       {...restProps}
       onPress={restProps.onPress}
       style={[

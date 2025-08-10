@@ -1,19 +1,33 @@
+import CartHeaderComponent from '@/components/cart/CartHeaderComponent';
 import HeaderComponent from '@/components/homePage/HeaderComponent';
+import { useAppSelector } from '@/hooks/reduxHooks';
 import { Feather, FontAwesome } from '@expo/vector-icons';
 import { useTheme } from '@react-navigation/native';
 import { Stack, Tabs } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function AuthenticatedLayout() {
   const { colors } = useTheme()
+  const { cart } = useAppSelector(state => state.products)
+
+  const count = useMemo(() => {
+    return cart.reduce((acc, item) => {
+      acc = acc + item.quantity;
+      return acc
+    }, 0)
+  }, [cart])
+
+
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: colors.primary
+        animation: 'shift',
+        tabBarActiveTintColor: colors.blue
       }}>
       <StatusBar style='auto' />
       <Tabs.Screen
@@ -29,8 +43,8 @@ export default function AuthenticatedLayout() {
         name="cart"
         options={{
           headerShown: true,
-          title: 'Cart',
-          tabBarBadge: 9,
+          header: () => <CartHeaderComponent />,
+          tabBarBadge: count > 9 ? "9+" : count,
           tabBarBadgeStyle: {
             color: "#fff",
             backgroundColor: colors.blue,
@@ -50,20 +64,6 @@ export default function AuthenticatedLayout() {
   );
 }
 
-const styles = StyleSheet.create({
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingVertical: 15,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    // color: colors.text,
-  },
-
-})
 
 // <Stack
 //   initialRouteName='cart'

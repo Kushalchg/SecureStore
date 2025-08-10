@@ -5,14 +5,14 @@ import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { ExtendedTheme } from "@/constants/CustomTheme";
 
 
-const NoProducts = () => {
+const NoProducts = ({ message }: { message: string }) => {
   const { colors } = useTheme();
   const styles = createStyles(colors);
 
   return (
     <View style={styles.container}>
       <MaterialIcons name="production-quantity-limits" size={48} color={colors.text} />
-      <Text style={styles.message}>Opps, No Product to see!!</Text>
+      <Text style={styles.message}>{message}</Text>
     </View>
   );
 };
@@ -28,7 +28,8 @@ const createStyles = (colors: ExtendedTheme['colors']) =>
     message: {
       marginTop: 10,
       fontSize: 16,
-      color: colors.text,
+      width: '60%',
+      color: colors.muted,
       textAlign: "center",
     },
   });

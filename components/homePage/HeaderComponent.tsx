@@ -6,13 +6,9 @@ import { ExtendedTheme } from "@/constants/CustomTheme";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-interface HeaderProps {
-  profileImage?: string;
-  onCartPress?: () => void;
-  cartItemCount?: number; // Add cart item count prop
-}
 
-const HeaderComponent = ({ cartItemCount = 2 }: HeaderProps) => {
+const HeaderComponent = () => {
+  const notificationCount = 5;
   const { colors } = useTheme();
   const { top, bottom } = useSafeAreaInsets()
   const styles = createStyles(colors);
@@ -44,10 +40,10 @@ const HeaderComponent = ({ cartItemCount = 2 }: HeaderProps) => {
         <TouchableOpacity onPress={onCartPress} style={[styles.cartButton]}>
           <View style={styles.cartIconContainer}>
             <Ionicons name="notifications-outline" size={24} color={colors.text} />
-            {cartItemCount > 0 && (
+            {notificationCount > 0 && (
               <View style={styles.badge}>
                 <Text style={styles.badgeText}>
-                  {cartItemCount > 99 ? '99+' : cartItemCount.toString()}
+                  {notificationCount > 99 ? '99+' : notificationCount.toString()}
                 </Text>
               </View>
             )}

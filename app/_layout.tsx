@@ -18,7 +18,6 @@ export default function RootLayout() {
     MontserratBold: require('../assets/fonts/Montserrat-Bold.ttf'),
     GroteskBold: require('../assets/fonts/SpaceGrotesk-Bold.ttf'),
     Grotesk: require('../assets/fonts/SpaceGrotesk-Regular.ttf'),
-
   });
 
   if (!loaded) {

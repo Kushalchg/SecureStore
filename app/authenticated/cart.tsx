@@ -1,117 +1,89 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import { Ionicons } from "@expo/vector-icons";
 import { useAppSelector } from "@/hooks/reduxHooks";
-import { Product } from "@/lib/redux/productSlice";
+import CartItemComponent from "@/components/cart/CartItem";
+import { ExtendedTheme } from "@/constants/CustomTheme";
+import { CustomButton } from "@/components/custom/CustomButton";
+import NoProducts from "@/components/homePage/NoProduct";
 
 
-
-const CartScreen: React.FC = () => {
+const CartScreen = () => {
+  const { cart } = useAppSelector(state => state.products)
+  console.log({ cart })
   const { colors } = useTheme();
   const styles = createStyles(colors);
-  const { products } = useAppSelector(state => state.products)
 
-  const renderItem = ({ item }: { item: Product }) => (
-    <View style={styles.cartItem}>
-      <Image source={{ uri: item.image }} style={styles.productImage} />
+  const totalAmount = useMemo(() => {
+    return cart.reduce((acc, item) => {
+      acc = acc + (item.quantity * item.price)
+      return acc
+    }, 0)
+  }, [cart])
 
-      <View style={styles.details}>
-        <Text style={styles.productName}>{item.title}</Text>
-        <Text style={styles.productPrice}>{item.price}</Text>
-        <Text style={styles.productQuantity}>Qty: 10</Text>
-      </View>
-
-      <TouchableOpacity style={styles.removeButton}>
-        <Ionicons name="trash-outline" size={20} color={colors.text} />
-      </TouchableOpacity>
-    </View>
-  );
+  const totalQuantity = useMemo(() => {
+    return cart.reduce((acc, item) => {
+      acc = acc + item.quantity
+      return acc
+    }, 0)
+  }, [cart])
 
   return (
     <View style={styles.container}>
-
       <FlatList
-        data={products}
-        renderItem={renderItem}
+        data={cart}
+        renderItem={({ item }) => <CartItemComponent item={item} />}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.list}
+        ListEmptyComponent={<NoProducts message={"Currently you didn't have any product on cart."} />}
       />
-
-      <View style={styles.footer}>
-        <Text style={styles.total}>Total: $310</Text>
-        <TouchableOpacity style={styles.checkoutButton}>
-          <Text style={styles.checkoutText}>Checkout</Text>
-        </TouchableOpacity>
-      </View>
+      {cart.length > 0 ?
+        <View style={styles.footer}>
+          <View style={styles.row}>
+            <Text style={styles.title}>Total</Text>
+            <Text style={styles.value}>NPR {totalAmount.toFixed(2)}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.title}>Quantity</Text>
+            <Text style={styles.value}>{totalQuantity} Items</Text>
+          </View>
+          <CustomButton style={{ marginTop: 10 }}>
+            <Text style={styles.checkoutText}>Processed To Checkout</Text>
+          </CustomButton>
+        </View> : null}
     </View>
   );
 };
 
-const createStyles = (colors: any) =>
+const createStyles = (colors: ExtendedTheme['colors']) =>
   StyleSheet.create({
     container: {
       flex: 1,
     },
-    header: {
-      fontSize: 22,
-      fontWeight: "bold",
-      color: colors.text,
-      marginBottom: 10,
-    },
     list: {
       paddingBottom: 20,
-    },
-    cartItem: {
-      flexDirection: "row",
-      alignItems: "center",
-      backgroundColor: colors.card,
-      borderRadius: 10,
-      padding: 10,
-      marginBottom: 10,
-      shadowColor: "#000",
-      shadowOpacity: 0.1,
-      shadowRadius: 5,
-      elevation: 2,
-    },
-    productImage: {
-      width: 60,
-      height: 60,
-      borderRadius: 8,
-    },
-    details: {
-      flex: 1,
-      marginLeft: 10,
-    },
-    productName: {
-      fontSize: 16,
-      fontWeight: "500",
-      color: colors.text,
-    },
-    productPrice: {
-      fontSize: 14,
-      fontWeight: "bold",
-      color: colors.primary,
-      marginTop: 2,
-    },
-    productQuantity: {
-      fontSize: 12,
-      color: colors.text,
-      marginTop: 2,
-    },
-    removeButton: {
-      padding: 8,
     },
     footer: {
       borderTopWidth: 1,
       borderTopColor: colors.border,
-      paddingTop: 10,
+      paddingHorizontal: 10,
+      paddingVertical: 10,
     },
-    total: {
-      fontSize: 18,
-      fontWeight: "bold",
+    row: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginVertical: 10,
+      alignItems: 'center',
+    },
+    title: {
+      fontSize: 16,
+      fontFamily: 'MontserratMedium',
+      color: colors.notification,
+    },
+    value: {
+      fontSize: 16,
+      fontFamily: 'MontserratBold',
       color: colors.text,
-      marginBottom: 10,
     },
     checkoutButton: {
       backgroundColor: colors.primary,
@@ -120,8 +92,8 @@ const createStyles = (colors: any) =>
       alignItems: "center",
     },
     checkoutText: {
-      color: "#fff",
-      fontWeight: "bold",
+      fontFamily: "GroteskBold",
+      color: colors.blue,
       fontSize: 16,
     },
   });

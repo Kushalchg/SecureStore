@@ -2,13 +2,13 @@ import React from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
-import { Product } from "@/lib/redux/productSlice";
+import { addToCart, Product } from "@/lib/redux/productSlice";
 import { CustomButton } from "../custom/CustomButton";
 import { ExtendedTheme } from "@/constants/CustomTheme";
 
 interface Props {
   product: Product;
-  onAddToCart?: (product: Product) => void;
+  onAddToCart?: () => void;
 }
 
 const ProductItem: React.FC<Props> = ({ product, onAddToCart }) => {
@@ -32,9 +32,9 @@ const ProductItem: React.FC<Props> = ({ product, onAddToCart }) => {
           </Text>
         </View>
 
-        <Text style={styles.productPrice}>${product.price}</Text>
+        <Text style={styles.productPrice}>NPR {product.price}</Text>
 
-        <CustomButton style={{ paddingVertical: 8, }}>
+        <CustomButton style={{ paddingVertical: 8, }} onPress={onAddToCart}>
           <Ionicons name="cart-outline" size={18} color={colors.blue} />
           <Text style={styles.cartButtonText}>Add to Cart</Text>
         </CustomButton>

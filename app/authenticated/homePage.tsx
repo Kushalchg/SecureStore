@@ -1,67 +1,29 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, Image, StyleSheet, ActivityIndicator } from "react-native";
+import React, { useEffect, } from "react";
+import { View, Text, FlatList, StyleSheet } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import { Ionicons } from "@expo/vector-icons";
 import { ExtendedTheme } from "@/constants/CustomTheme";
-import { CustomButton } from "@/components/custom/CustomButton";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
-import { fetchProducts, Product } from "@/lib/redux/productSlice";
+import { addToCart, fetchProducts, Product } from "@/lib/redux/productSlice";
 import ProductItem from "@/components/homePage/ProductItem";
 import ProductSkeleton from "@/components/Skeleton";
 import NoProducts from "@/components/homePage/NoProduct";
 import { StatusBar } from "expo-status-bar";
-
-interface DummyProductType {
-  id: string;
-  name: string;
-  price: string;
-  image: string;
-}
-
-
-const dummyProducts: DummyProductType[] = [
-  {
-    id: "1",
-    name: "Wireless Headphones",
-    price: "$120",
-    image: "https://via.placeholder.com/150",
-  },
-  {
-    id: "2",
-    name: "Smart Watch",
-    price: "$95",
-    image: "https://via.placeholder.com/150",
-  },
-  {
-    id: "3",
-    name: "Gaming Mouse",
-    price: "$45",
-    image: "https://via.placeholder.com/150",
-  },
-  {
-    id: "4",
-    name: "Laptop Bag",
-    price: "$65",
-    image: "https://via.placeholder.com/150",
-  },
-];
+import { shortToast } from "@/utils/Toast";
 
 const HomeScreen = () => {
   const dispatch = useAppDispatch()
   const { colors } = useTheme();
   const styles = createStyles(colors);
-  const { products, cart, loading, error } = useAppSelector(state => state.products)
+  const { products, loading, error } = useAppSelector(state => state.products)
 
 
   useEffect(() => {
     dispatch(fetchProducts())
   }, [])
 
-  console.log({ products })
-
   const handleAddToCart = (product: Product) => {
-    console.log("Added to cart:", product);
+    dispatch(addToCart(product))
+    shortToast("Successfully added")
   };
 
   const onRefresh = () => {
