@@ -1,4 +1,4 @@
-import React, { useEffect, } from "react";
+import React, { useCallback, useEffect, } from "react";
 import { View, Text, FlatList, StyleSheet, BackHandler, Alert } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { ExtendedTheme } from "@/constants/CustomTheme";
@@ -11,6 +11,7 @@ import { StatusBar } from "expo-status-bar";
 import { shortToast } from "@/utils/Toast";
 import { CustomButton } from "@/components/custom/CustomButton";
 import { Ionicons } from "@expo/vector-icons";
+import { useFocusEffect } from "expo-router";
 
 const HomeScreen = () => {
   const dispatch = useAppDispatch()
@@ -19,34 +20,29 @@ const HomeScreen = () => {
   const { products, loading, error } = useAppSelector(state => state.products)
 
 
+  // to prevent user accidental back button press(confirm to exit app)
+  // only when the homepaeg is in foucs
+  useFocusEffect(
+    useCallback(() => {
+      const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
+        Alert.alert(
+          "Exit App",
+          "Are you sure you want to exit the app?",
+          [
+            { text: "Cancel", style: "cancel" },
+            { text: "Exit", style: "destructive", onPress: () => BackHandler.exitApp() },
+          ],
+          { cancelable: true }
+        );
+        return true;
+      });
+
+      return () => backHandler.remove();
+    }, [])
+  );
 
   useEffect(() => {
     dispatch(fetchProducts())
-
-    // to prevent user accidental back button press(confirm to exit app)
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-      Alert.alert(
-        'Exit App',
-        'Are you sure you want to exit the app?',
-        [
-          {
-            text: 'Cancel',
-            style: 'cancel',
-          },
-          {
-            text: 'Exit',
-            style: 'destructive',
-            onPress: () => BackHandler.exitApp(),
-          },
-        ],
-        { cancelable: true }
-      );
-      return true;
-    });
-
-    return () => {
-      backHandler.remove();
-    };
   }, [])
 
   const handleAddToCart = (product: Product) => {
@@ -57,7 +53,6 @@ const HomeScreen = () => {
   const onRefresh = () => {
     dispatch(fetchProducts())
   }
-
 
 
   if (error) {
@@ -71,6 +66,11 @@ const HomeScreen = () => {
         }}
       >
         <Text style={{ color: colors.text, fontSize: 16 }}>{error}</Text>
+        <Text style={{ color: colors.text, fontSize: 16 }}>Check your connection!!!</Text>
+        <CustomButton style={{ paddingVertical: 8, marginTop: 20 }} onPress={onRefresh}>
+          <Ionicons name="refresh" size={18} color={colors.blue} />
+          <Text style={styles.refreshButtonText}>Refresh</Text>
+        </CustomButton>
       </View>
     );
   }

@@ -19,7 +19,7 @@ const Index = () => {
     const isRooted = securityStatus.isRooted?.isRooted === true;
     const isDevEnabled = securityStatus.isDevEnabled?.isDeveloperOptionsEnabled === true;
 
-    if (!isRooted && isDevEnabled && !error) {
+    if (!isRooted && !isDevEnabled && !error) {
       //everything is false so safe to processed
       router.replace('/landingPage');
     } else {
