@@ -1,25 +1,35 @@
 import React from "react";
-import { View, Image, TouchableOpacity, StyleSheet, Text } from "react-native";
+import { View, Image, TouchableOpacity, StyleSheet, Text, useColorScheme, Appearance } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import { Ionicons } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import { ExtendedTheme } from "@/constants/CustomTheme";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-
+import { shortToast } from "@/utils/Toast";
 
 const HeaderComponent = () => {
   const notificationCount = 5;
+  const colorScheme = useColorScheme();
   const { colors } = useTheme();
   const { top, bottom } = useSafeAreaInsets()
   const styles = createStyles(colors);
-  const onCartPress = () => {
-    router.push("/authenticated/cart")
+  const onNotificationPress = () => {
+    shortToast("Nothing to show!!!")
+  }
+
+  const handleProfile = () => {
+    router.push("/authenticated/(tabs)/profile")
+  }
+
+
+  const handleChagneTheme = () => {
+    Appearance.setColorScheme(colorScheme === 'dark' ? 'light' : 'dark')
   }
 
   return (
     <View style={[styles.container, { paddingTop: top + 10 }]}>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <TouchableOpacity onPress={() => console.log("pressed")}>
+        <TouchableOpacity onPress={handleProfile}>
           <Image
             source={{ uri: 'https://picsum.photos/id/237/200/300' }}
             style={styles.profileImage}
@@ -30,37 +40,24 @@ const HeaderComponent = () => {
         </Text>
       </View>
       <View style={{ flexDirection: 'row' }}>
-
-        <TouchableOpacity onPress={onCartPress} style={[styles.cartButton, { marginRight: 15 }]}>
-          <View style={styles.cartIconContainer}>
-            <Ionicons name="search" size={24} color={colors.text} />
+        <TouchableOpacity onPress={handleChagneTheme} hitSlop={10} style={[styles.headerButton, { marginRight: 10, }]}>
+          <View >
+            {colorScheme === 'dark' ?
+              <Feather name='moon' size={25} color={colors.text} /> :
+              <Feather name='sun' size={25} color={colors.text} />
+            }
           </View>
         </TouchableOpacity>
-
-        <TouchableOpacity onPress={onCartPress} style={[styles.cartButton]}>
+        <TouchableOpacity onPress={onNotificationPress} style={[styles.headerButton]}>
           <View style={styles.cartIconContainer}>
             <Ionicons name="notifications-outline" size={24} color={colors.text} />
-            {notificationCount > 0 && (
-              <View style={styles.badge}>
-                <Text style={styles.badgeText}>
-                  {notificationCount > 99 ? '99+' : notificationCount.toString()}
-                </Text>
-              </View>
-            )}
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>
+                {notificationCount.toString()}
+              </Text>
+            </View>
           </View>
         </TouchableOpacity>
-        {/* <TouchableOpacity onPress={onCartPress} style={styles.cartButton}> */}
-        {/*   <View style={styles.cartIconContainer}> */}
-        {/*     <Ionicons name="notifications-outline" size={24} color={colors.text} /> */}
-        {/*     {cartItemCount > 0 && ( */}
-        {/*       <View style={styles.badge}> */}
-        {/*         <Text style={styles.badgeText}> */}
-        {/*           {cartItemCount > 99 ? '99+' : cartItemCount.toString()} */}
-        {/*         </Text> */}
-        {/*       </View> */}
-        {/*     )} */}
-        {/*   </View> */}
-        {/* </TouchableOpacity> */}
       </View>
     </View>
   );
@@ -87,7 +84,7 @@ const createStyles = (colors: ExtendedTheme["colors"]) =>
       color: colors.text,
       fontSize: 20,
     },
-    cartButton: {
+    headerButton: {
       padding: 6,
     },
     cartIconContainer: {

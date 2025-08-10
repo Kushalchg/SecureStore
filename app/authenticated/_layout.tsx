@@ -1,83 +1,21 @@
-import CartHeaderComponent from '@/components/cart/CartHeaderComponent';
-import HeaderComponent from '@/components/homePage/HeaderComponent';
-import { useAppSelector } from '@/hooks/reduxHooks';
-import { Feather, FontAwesome } from '@expo/vector-icons';
-import { useTheme } from '@react-navigation/native';
-import { Stack, Tabs } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import { useMemo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import 'react-native-reanimated';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function AuthenticatedLayout() {
-  const { colors } = useTheme()
-  const { cart } = useAppSelector(state => state.products)
+import { Stack } from 'expo-router';
 
-  const count = useMemo(() => {
-    return cart.reduce((acc, item) => {
-      acc = acc + item.quantity;
-      return acc
-    }, 0)
-  }, [cart])
-
-
+export default function AuthenticatedStack() {
   return (
-    <Tabs
+    <Stack
       screenOptions={{
-        headerShown: false,
-        animation: 'shift',
-        tabBarActiveTintColor: colors.blue
+        animation: 'slide_from_right'
       }}>
-      <StatusBar style='auto' />
-      <Tabs.Screen
-        name="homePage"
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="resetPassword"
         options={{
           headerShown: true,
-          header: () => <HeaderComponent />,
-          title: 'Home',
-          tabBarIcon: ({ color }) => <Feather size={28} name="home" color={color} />,
+          title: "Reset Password",
+          headerTitleStyle: { fontFamily: "GroteskBold" }
         }}
       />
-      <Tabs.Screen
-        name="cart"
-        options={{
-          headerShown: true,
-          header: () => <CartHeaderComponent />,
-          tabBarBadge: count > 9 ? "9+" : count,
-          tabBarBadgeStyle: {
-            color: "#fff",
-            backgroundColor: colors.blue,
-          },
-          tabBarIcon: ({ color }) => <Feather size={28} name="shopping-cart" color={color} />,
-        }}
-      />
-
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: 'Profile',
-          tabBarIcon: ({ color }) => <Feather size={28} name="user" color={color} />,
-        }}
-      />
-    </Tabs>
+    </Stack>
   );
 }
-
-
-// <Stack
-//   initialRouteName='cart'
-//   screenOptions={{
-//
-//     animation: 'slide_from_right'
-//
-//   }}>
-//   {/* <Stack.Screen name="homePage" */}
-//   {/*   options={{ */}
-//   {/*     headerShown: true, */}
-//   {/*     header: () => <HeaderComponent /> */}
-//   {/*   }} */}
-//   {/* /> */}
-//   {/* <Stack.Screen name="cart" options={{ headerShown: true }} /> */}
-//
-// </Stack>

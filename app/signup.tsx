@@ -8,8 +8,6 @@ import {
   Alert,
   StyleSheet,
   Dimensions,
-  Keyboard,
-  Touchable,
   KeyboardAvoidingView,
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -18,7 +16,6 @@ import { ExtendedTheme } from '@/constants/CustomTheme';
 import { CustomButton } from '@/components/custom/CustomButton';
 import HorizontalLine from '@/components/HorizontalLines';
 import VerticalLine from '@/components/VerticalLines';
-import { Feather } from '@expo/vector-icons';
 import CustomTextInput from '@/components/custom/UserInput';
 import BackButton from '@/components/BackButton';
 import { router } from 'expo-router';
@@ -54,8 +51,6 @@ const initialValues: FormDateInterface = {
 const SignUpScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
-  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
   const { top, bottom } = useSafeAreaInsets()
 
   const { colors } = useTheme();

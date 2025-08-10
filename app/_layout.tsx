@@ -27,11 +27,13 @@ export default function RootLayout() {
   return (
     <Provider store={store}>
       <ThemeProvider value={colorScheme === 'dark' ? MyDarkTheme : MyLightTheme}>
-        <Stack screenOptions={{
-          animation: 'slide_from_right'
-
-        }}>
+        <Stack
+          initialRouteName='index'
+          screenOptions={{
+            animation: 'slide_from_right'
+          }}>
           <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="securityScreen" options={{ headerShown: false }} />
           <Stack.Screen name="landingPage" options={{ headerShown: false }} />
           <Stack.Screen name="signin" options={{ headerShown: false }} />
           <Stack.Screen name="signup" options={{ headerShown: false }} />

@@ -64,11 +64,6 @@ const createStyles = (colors: ExtendedTheme["colors"]) =>
       padding: 10,
 
     },
-    profileImage: {
-      width: 40,
-      height: 40,
-      borderRadius: 20,
-    },
     titleText: {
       marginLeft: 10,
       fontFamily: "GroteskBold",
@@ -81,26 +76,6 @@ const createStyles = (colors: ExtendedTheme["colors"]) =>
     cartIconContainer: {
       position: 'relative',
     },
-    badge: {
-      position: 'absolute',
-      top: -8,
-      right: -8,
-      backgroundColor: colors.blue,
-      borderRadius: 10,
-      minWidth: 20,
-      height: 20,
-      justifyContent: 'center',
-      alignItems: 'center',
-      paddingHorizontal: 4,
-    },
-    badgeText: {
-      color: 'white',
-      fontSize: 12,
-      fontFamily: 'SpaceMono',
-      fontWeight: 'bold',
-      textAlign: 'center',
-    },
-
   });
 
 export default CartHeaderComponent;

@@ -79,7 +79,6 @@ const createStyles = (colors: ExtendedTheme['colors']) =>
     },
     ratingText: {
       fontSize: 12,
-
       fontFamily: "Grotesk",
       color: colors.text,
       marginLeft: 4,
@@ -89,15 +88,6 @@ const createStyles = (colors: ExtendedTheme['colors']) =>
       fontFamily: "GroteskBold",
       color: colors.blue,
       marginVertical: 5,
-    },
-    cartButton: {
-      flexDirection: "row",
-      alignItems: "center",
-      backgroundColor: colors.primary,
-      paddingVertical: 6,
-      paddingHorizontal: 10,
-      borderRadius: 6,
-      marginTop: 6,
     },
     cartButtonText: {
       color: colors.blue,

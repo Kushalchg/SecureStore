@@ -113,11 +113,6 @@ const createStyles = (colors: ExtendedTheme['colors']) =>
       flexDirection: 'row',
       alignItems: 'center',
     },
-    quantityButton: {
-      padding: 8,
-      backgroundColor: colors.background,
-      borderRadius: 8,
-    },
     quantity: {
       fontSize: 16,
       fontWeight: '600',

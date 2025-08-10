@@ -21,7 +21,11 @@ const LandingPage = () => {
   };
 
   const handleGoogleSingin = () => {
-    router.replace("/authenticated/homePage")
+    router.push("/signin")
+  };
+
+  const handleSkip = () => {
+    router.replace("/authenticated/(tabs)/homePage")
   };
 
   return (
@@ -43,9 +47,9 @@ const LandingPage = () => {
             <Text style={styles.googleText}>Continue with Google</Text>
           </CustomButton>
 
-          <CustomButton borderColor={colors.muted} onPress={() => console.log("aa")}>
-            <Feather name="smartphone" size={20} color={colors.text} style={styles.iconSpacing} />
-            <Text style={styles.mobileText}>Continue with Mobile Number</Text>
+          <CustomButton borderColor={colors.muted} onPress={handleSkip}>
+            <Feather name="smartphone" size={20} color={colors.text + "80"} style={styles.iconSpacing} />
+            <Text style={styles.mobileText}>Just Skip for Now</Text>
           </CustomButton>
         </View>
 

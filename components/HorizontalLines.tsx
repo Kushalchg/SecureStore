@@ -2,7 +2,7 @@ import { useEffect, useMemo } from "react"
 import { Dimensions, StyleSheet, View } from "react-native"
 import { useTheme } from "@react-navigation/native"
 import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated"
-import { ExtendedTheme } from "@/constants/CustomThemt"
+import { ExtendedTheme } from "@/constants/CustomTheme"
 const { height } = Dimensions.get('screen')
 
 const HorizontalLine = ({ animation = false, GAP = 50 }: { angle?: number, animation?: boolean, GAP?: number }) => {

@@ -1,88 +1,101 @@
 import { useNativeModule } from '@/hooks/useNativeModule';
 import { router } from 'expo-router';
 import React, { useEffect } from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, BackHandler, ActivityIndicator } from 'react-native';
+import { useTheme } from '@react-navigation/native';
+import { ExtendedTheme } from '@/constants/CustomTheme';
+const Index = () => {
+  const { colors } = useTheme();
+  const { securityStatus, error } = useNativeModule();
+  const styles = createStyles(colors);
 
-const SecurityScreen: React.FC = () => {
-  const { securityStatus, error, checkSecurity } = useNativeModule();
 
   useEffect(() => {
-    if (securityStatus?.isRooted) {
-      router.replace("/landingPage")
+    if (!securityStatus || error === undefined) {
+      //no data yet received so i have to do nothing here
+      return;
     }
-  }, [securityStatus])
+
+    const isRooted = securityStatus.isRooted?.isRooted === true;
+    const isDevEnabled = securityStatus.isDevEnabled?.isDeveloperOptionsEnabled === true;
+
+    if (!isRooted && isDevEnabled && !error) {
+      //everything is false so safe to processed
+      router.replace('/landingPage');
+    } else {
+      //Somethins is messed up here
+      router.replace('/securityScreen');
+    }
+  }, [securityStatus, error]);
+
+  const handleExit = () => {
+    BackHandler.exitApp();
+  };
 
   if (error) {
     return (
       <View style={styles.container}>
-        <Text style={styles.error}>Error: {error}</Text>
-        <Button title="Retry" onPress={checkSecurity} />
+        <Text style={styles.errorText}>Security Check Failed: {error}</Text>
+        <Text style={styles.messageText}>Unable to proceed due to security error.</Text>
+        <TouchableOpacity style={styles.button} onPress={handleExit}>
+          <Text style={styles.buttonText}>Exit App</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  if (!securityStatus) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size={'large'} color={colors.blue} />
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Security Status</Text>
-
-      <View style={styles.statusItem}>
-        <Text>Device Rooted: </Text>
-        <Text style={securityStatus?.isRooted ? styles.danger : styles.safe}>
-          {securityStatus?.isRooted ? 'YES' : 'NO'}
-        </Text>
+      <View style={styles.container}>
+        <ActivityIndicator size={'large'} color={colors.blue} />
       </View>
-
-      <View style={styles.statusItem}>
-        <Text>Developer Options: </Text>
-        <Text style={securityStatus?.isDevEnabled ? styles.warning : styles.safe}>
-          {securityStatus?.isDevEnabled ? 'ENABLED' : 'DISABLED'}
-        </Text>
-      </View>
-      <Button title="Refresh" onPress={checkSecurity} />
-    </View>
+    </View >
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  statusItem: {
-    flexDirection: 'row',
-    marginBottom: 10,
-    fontSize: 16,
-  },
-  detail: {
-    fontSize: 12,
-    color: '#666',
-    marginLeft: 10,
-    marginBottom: 10,
-  },
-  safe: {
-    color: 'green',
-    fontWeight: 'bold',
-  },
-  warning: {
-    color: 'orange',
-    fontWeight: 'bold',
-  },
-  danger: {
-    color: 'red',
-    fontWeight: 'bold',
-  },
-  error: {
-    color: 'red',
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-});
+const createStyles = (colors: ExtendedTheme['colors']) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 20,
+    },
+    errorText: {
+      fontSize: 16,
+      color: colors.red,
+      textAlign: 'center',
+      fontFamily: "Grotesk",
+      marginBottom: 10,
+    },
+    messageText: {
+      fontSize: 16,
+      color: colors.text,
+      fontFamily: "Grotesk",
+      textAlign: 'center',
+      marginVertical: 20,
+      maxWidth: '80%',
+    },
+    button: {
+      backgroundColor: colors.primary,
+      borderRadius: 8,
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+    },
+    buttonText: {
+      fontSize: 16,
+      color: colors.blue,
+      fontFamily: "GroteskBold"
+    },
+  });
 
-export default SecurityScreen;
+export default Index;

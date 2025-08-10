@@ -2,7 +2,7 @@ import { useEffect, useMemo } from "react"
 import { Dimensions, StyleSheet, View } from "react-native"
 import { useTheme } from "@react-navigation/native"
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated"
-import { ExtendedTheme } from "@/constants/CustomThemt"
+import { ExtendedTheme } from "@/constants/CustomTheme"
 const { width } = Dimensions.get('screen')
 const VerticalLine = ({ angle = 0, animation = false, GAP = 50 }: { angle?: number, animation?: boolean, GAP?: number }) => {
   const xtranslate = useSharedValue(0)

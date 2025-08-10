@@ -53,7 +53,8 @@ const productSlice = createSlice({
     addToCart: (state, action: PayloadAction<Product>) => {
       const product = action.payload;
       const existingItem = state.cart.find((item) => item.id === product.id);
-
+      //if item already on list it will add the quantity on that item
+      //otherwise it will added that item on cart list with quantity 1
       if (existingItem) {
         existingItem.quantity += 1;
       } else {
@@ -69,6 +70,9 @@ const productSlice = createSlice({
     decreaseQuantity: (state, action: PayloadAction<number>) => {
       const item = state.cart.find((cartItem) => cartItem.id === action.payload);
       if (item) {
+        //only decrease the item if the item has atleast 2 quantity on cart 
+        //if cart has one item left it will remove item itself 
+        //although second logic is not implemented , it's here just to be safe
         if (item.quantity > 1) {
           item.quantity -= 1;
         } else {
@@ -78,6 +82,7 @@ const productSlice = createSlice({
     },
 
     removeFromCart: (state, action: PayloadAction<number>) => {
+      //filterout the item from cart list 
       state.cart = state.cart.filter((cartItem) => cartItem.id !== action.payload);
     },
     clearCart: (state) => {

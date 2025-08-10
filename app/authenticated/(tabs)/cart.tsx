@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, FlatList, StyleSheet } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import CartItemComponent from "@/components/cart/CartItem";
