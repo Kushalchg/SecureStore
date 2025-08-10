@@ -3,7 +3,7 @@
 
 Mock practice app demonstrating mobile security features including root detection, screenshot prevention, and developer mode restrictions.
 NOTE: Release and Debug APKs are available [**here**](https://github.com/Kushalchg/SecureStore/releases/tag/v1.0.1)
-https://github.com/Kushalchg/SecureStore/releases/tag/v1.0.0
+https://github.com/Kushalchg/SecureStore/releases/tag/v1.0.1
 
 ## Security Features
 
