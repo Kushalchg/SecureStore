@@ -2,7 +2,7 @@
 # Secure Store
 
 Mock practice app demonstrating mobile security features including root detection, screenshot prevention, and developer mode restrictions.
-NOTE: Release and Debug APKs are available [**here**](https://github.com/Kushalchg/SecureStore/releases/tag/v1.0.0)
+NOTE: Release and Debug APKs are available [**here**](https://github.com/Kushalchg/SecureStore/releases/tag/v1.0.1)
 https://github.com/Kushalchg/SecureStore/releases/tag/v1.0.0
 
 ## Security Features
@@ -29,7 +29,7 @@ https://github.com/Kushalchg/SecureStore/releases/tag/v1.0.0
    
    Debug APK location: `android/app/build/outputs/apk/debug/app-debug.apk`
 
-   Add to this you can also find the `app-debug.apk` and `app-release.apk` on project [release](https://github.com/Kushalchg/SecureStore/releases/tag/v1.0.0) page also.
+   Add to this you can also find the `app-debug.apk` and `app-release.apk` on project [release](https://github.com/Kushalchg/SecureStore/releases/tag/v1.0.1) page also.
 
 3. Device setup (if using physical device)
    
